@@ -2,8 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { Lesson } from './Lesson';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as RadixCollapsable from '@radix-ui/react-collapsible';
-import { useAppDispatch, useAppSelector } from '../store';
-import { play } from '../store/slices/player';
+import { useStore } from '../zustand-store';
 
 interface ModuleProps {
   moduleIndex: number;
@@ -12,22 +11,21 @@ interface ModuleProps {
 }
 
 export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
-  const lessons = useAppSelector(state => {
-    const { currentModuleIndex } = state.player;
-    return state.player.course?.modules[currentModuleIndex].lessons;
-  });
-  const currentModuleIndex = useAppSelector(
-    state => state.player.currentModuleIndex,
-  );
-  const currentLessonIndex = useAppSelector(
-    state => state.player.currentLessonIndex,
+  const { currentModuleIndex, currentLessonIndex, lessons, play } = useStore(
+    store => {
+      return {
+        currentModuleIndex: store.currentModuleIndex,
+        currentLessonIndex: store.currentLessonIndex,
+        lessons: store.course?.modules[moduleIndex].lessons,
+        play: store.play,
+      };
+    },
   );
 
-  const dispatch = useAppDispatch();
   const [parent] = useAutoAnimate();
 
   const handleOnPlay = (lessonIndex: number) => {
-    dispatch(play({ moduleIndex, lessonIndex }));
+    play({ moduleIndex, lessonIndex });
   };
 
   return (
