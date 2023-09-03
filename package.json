@@ -9,12 +9,14 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "server": "json-server server.json -w -d 500"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.7.0",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.5.0",
     "lucide-react": "^0.270.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,6 +30,7 @@
     "autoprefixer": "^10.4.15",
     "eslint-config-js-stack": "^1.0.5",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "json-server": "^0.17.3",
     "postcss": "^8.4.28",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "^3.3.3",
