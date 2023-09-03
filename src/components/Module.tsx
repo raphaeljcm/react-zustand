@@ -13,9 +13,17 @@ interface ModuleProps {
 }
 
 export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
-  const lessons = useAppSelector(
-    state => state.player.course.modules[moduleIndex].lessons,
+  const lessons = useAppSelector(state => {
+    const { currentModuleIndex } = state.player;
+    return state.player.course.modules[currentModuleIndex].lessons;
+  });
+  const currentModuleIndex = useAppSelector(
+    state => state.player.currentModuleIndex,
   );
+  const currentLessonIndex = useAppSelector(
+    state => state.player.currentLessonIndex,
+  );
+
   const dispatch = useDispatch();
   const [parent] = useAutoAnimate();
 
@@ -24,7 +32,7 @@ export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
   };
 
   return (
-    <RadixCollapsable.Root className="group">
+    <RadixCollapsable.Root className="group" defaultOpen={moduleIndex === 0}>
       <RadixCollapsable.Trigger className="flex w-full items-center gap-3 bg-zinc-800 p-4">
         <div className="flex h-10 w-10 rounded-full items-center justify-center bg-zinc-950 text-xs">
           {moduleIndex + 1}
@@ -40,14 +48,21 @@ export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
 
       <RadixCollapsable.Content ref={parent}>
         <nav className="relative flex flex-col gap-4 p-6">
-          {lessons.map((lesson, lessonIndex) => (
-            <Lesson
-              key={lesson.id}
-              title={lesson.title}
-              duration={lesson.duration}
-              onPlay={() => handleOnPlay(lessonIndex)}
-            />
-          ))}
+          {lessons.map((lesson, lessonIndex) => {
+            const isCurrentLesson =
+              currentModuleIndex === moduleIndex &&
+              currentLessonIndex === lessonIndex;
+
+            return (
+              <Lesson
+                key={lesson.id}
+                title={lesson.title}
+                duration={lesson.duration}
+                isCurrent={isCurrentLesson}
+                onPlay={() => handleOnPlay(lessonIndex)}
+              />
+            );
+          })}
         </nav>
       </RadixCollapsable.Content>
     </RadixCollapsable.Root>
