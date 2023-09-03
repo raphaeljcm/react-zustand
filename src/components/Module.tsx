@@ -2,8 +2,7 @@ import { ChevronDown } from 'lucide-react';
 import { Lesson } from './Lesson';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as RadixCollapsable from '@radix-ui/react-collapsible';
-import { useAppSelector } from '../store';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../store';
 import { play } from '../store/slices/player';
 
 interface ModuleProps {
@@ -15,7 +14,7 @@ interface ModuleProps {
 export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
   const lessons = useAppSelector(state => {
     const { currentModuleIndex } = state.player;
-    return state.player.course.modules[currentModuleIndex].lessons;
+    return state.player.course?.modules[currentModuleIndex].lessons;
   });
   const currentModuleIndex = useAppSelector(
     state => state.player.currentModuleIndex,
@@ -24,7 +23,7 @@ export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
     state => state.player.currentLessonIndex,
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [parent] = useAutoAnimate();
 
   const handleOnPlay = (lessonIndex: number) => {
@@ -48,21 +47,22 @@ export function Module({ moduleIndex, title, amountOfLessons }: ModuleProps) {
 
       <RadixCollapsable.Content ref={parent}>
         <nav className="relative flex flex-col gap-4 p-6">
-          {lessons.map((lesson, lessonIndex) => {
-            const isCurrentLesson =
-              currentModuleIndex === moduleIndex &&
-              currentLessonIndex === lessonIndex;
+          {lessons &&
+            lessons.map((lesson, lessonIndex) => {
+              const isCurrentLesson =
+                currentModuleIndex === moduleIndex &&
+                currentLessonIndex === lessonIndex;
 
-            return (
-              <Lesson
-                key={lesson.id}
-                title={lesson.title}
-                duration={lesson.duration}
-                isCurrent={isCurrentLesson}
-                onPlay={() => handleOnPlay(lessonIndex)}
-              />
-            );
-          })}
+              return (
+                <Lesson
+                  key={lesson.id}
+                  title={lesson.title}
+                  duration={lesson.duration}
+                  isCurrent={isCurrentLesson}
+                  onPlay={() => handleOnPlay(lessonIndex)}
+                />
+              );
+            })}
         </nav>
       </RadixCollapsable.Content>
     </RadixCollapsable.Root>
